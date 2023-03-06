@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<title>Actualizar Producto</title>
+</h:head>
+<h:body>
+	<h2>
+		<h:outputText value="Nueva Categoria"></h:outputText>
+	</h2>
+
+	<h:form>
+		<h:panelGrid columns="2" cellspacing="20" border="1">
+			
+			<h:outputText value="Nombre"></h:outputText>
+			<h:inputText value="#{category.name}"></h:inputText>
+
+			<h:outputText value="Marca"></h:outputText>
+				<h:selectOneMenu id="marca" value="#{categoryController.statusToAdd}">
+				    <f:selectItem itemLabel="Activo" itemValue="Activo" />    
+				</h:selectOneMenu>
+
+			<f:facet name="footer">
+				<h:commandButton action="#{categoryController.addNew(category)}" value="Guardar"></h:commandButton>
+			</f:facet>
+			
+		</h:panelGrid>
+	</h:form>
+
+</h:body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<title>Editar cliente</title>
+</h:head>
+<h:body>
+	<h2>
+		<h:outputText value="Editar Cliente"></h:outputText>
+	</h2>
+
+	<h:form>
+	<p:panel styleClass="editar" header="EDITAR CLIENTE">
+		<h:panelGrid columns="3" cellspacing="20">
+			
+			<h:outputLabel value="Nombre"></h:outputLabel>
+			<p:inputText id="firstName" value="#{cliente.nombre_cli}" requiredMessage="Campo requerido" required="true"></p:inputText>
+			<p:message for="firstName"/>
+
+			<h:outputText value="Apellido"></h:outputText>
+			<p:inputText id="lastName" value="#{cliente.apellido_cli}" requiredMessage="Campo requerido" required="true"></p:inputText>
+			<p:message for="lastName"/>
+			
+			<h:outputText value="Cédula"></h:outputText>
+			<p:inputText id="id"  value="#{cliente.cedula_cli}" requiredMessage="Campo requerido" required="true"></p:inputText>
+			<p:message for="id"/>
+
+			<f:facet name="footer">
+				<h:commandButton action="#{clienteManagedBean.actualizar(cliente)}" value="Actualizar"></h:commandButton>
+			</f:facet>
+			
+		</h:panelGrid>
+		</p:panel>
+	</h:form>
+
+</h:body>
+</html>

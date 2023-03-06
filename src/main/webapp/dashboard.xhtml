@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+   <h:head>
+      <title>Dashboard</title>
+      <link rel="stylesheet" type="text/css" href="css/dashboard.css" />
+   </h:head>
+
+   <h:body class="dashboard">
+	   	<ui:param name="usuario" value="#{facesContext.externalContext.sessionMap['usuario']}" />
+	   	<f:view>
+	   		<f:event type="preRenderView" listener="#{usuarioController.userNotExists()}" />
+		</f:view>
+		<nav>
+			<h3 class="business">TechShop</h3>
+			<div class="user-name">
+				<h3 class="fullname">#{usuario.nombre} #{usuario.nombre}</h3>	
+				<h:commandButton value="Ver Pagina" />
+			</div>
+		</nav>
+		<section class="panel">
+			<div class="options">
+				<h:form>
+					<h:commandButton class="opt" value="Productos" action="#{usuarioController.setView('products')}" />
+				</h:form>
+				<h:form>
+	            <h:commandButton class="opt" value="Categorias" action="#{usuarioController.setView('categories')}"/>
+	            </h:form>
+	            <h:form>
+	            <h:commandButton class="opt" value="Marcas" action="#{usuarioController.setView('brands')}"/>
+	            </h:form>
+	            <h:form>
+	            	<h:commandButton class="opt" action="#{usuarioController.cerrarSesion}" value="Cerrar sesión" />
+	            </h:form>
+			</div>
+			<div class="view">
+				<!-- Titulos -->
+				<h:outputLabel rendered="#{usuarioController.view eq 'products'}">Productos</h:outputLabel>
+				<h:outputLabel rendered="#{usuarioController.view eq 'categories'}">Categorias</h:outputLabel>
+				<h:outputLabel rendered="#{usuarioController.view eq 'brands'}">Marcas</h:outputLabel>
+				
+				<!-- Botones para agregar nuevo -->
+				<h:form rendered="#{usuarioController.view eq 'products'}">
+	            	<h:commandButton action="#{productController.create()}" value="Nuevo Producto" />
+	            </h:form>
+	            <h:form rendered="#{usuarioController.view eq 'categories'}">
+	            	<h:commandButton action="#{categoryController.create()}" value="Nuevo Categoría" />
+	            </h:form>
+	            <h:form rendered="#{usuarioController.view eq 'brands'}">
+	            	<h:commandButton action="#{brandController.create()}" value="Nuevo Marca" />
+	            </h:form>
+	            
+	            <!--  Tablas  -->
+	            <h:form rendered="#{usuarioController.view eq 'products'}">
+					<h:dataTable  value="#{productController.getAll()}" var="product" rowIndexVar="productController.rowIndex">
+				        <h:column>
+					        <f:facet name="header">N°</f:facet>
+					        #{productController.rowIndex}
+					    </h:column>
+				        <h:column>
+				            <f:facet name="header">Nombre</f:facet>
+				            #{product.name}
+				        </h:column>
+				        <h:column>
+				            <f:facet name="header">Descripción</f:facet>
+				            #{product.description}
+				        </h:column>
+				        <h:column>
+				            <f:facet name="header">Precio</f:facet>
+				            #{product.price}
+				        </h:column>
+				        <h:column>
+				            <f:facet name="header">Marca</f:facet>
+				            #{product.brand.name}
+				        </h:column>
+				        <h:column>
+				            <f:facet name="header">Categoría</f:facet>
+				            #{product.category.name}
+				        </h:column>
+				        <h:column>
+				            <f:facet name="header">Estado</f:facet>
+				            #{product.status}
+				        </h:column>
+				        <h:column>
+						    <f:facet name="header">Acciones</f:facet>
+						      <h:commandLink value="Modificar"
+						                     action="#{productController.goUpdate(product)}"/>
+						      <h:commandLink value="Eliminar"
+						                     action="#{productController.remove(product.id)}"/>
+						 </h:column>
+				    </h:dataTable>
+				</h:form>
+				<h:form rendered="#{usuarioController.view eq 'categories'}">
+					<h:dataTable  value="#{categoryController.getAll()}" var="category" rowIndexVar="categoryController.rowIndex">
+				        <h:column>
+					        <f:facet name="header">N°</f:facet>
+					        #{categoryController.rowIndex}
+					    </h:column>
+				        <h:column>
+				            <f:facet name="header">Nombre</f:facet>
+				            #{category.name}
+				        </h:column>
+				        <h:column>
+				            <f:facet name="header">Descripción</f:facet>
+				            #{category.status}
+				        </h:column>
+				        <h:column>
+						    <f:facet name="header">Acciones</f:facet>
+						      <h:commandLink value="Modificar"
+						                     action="#{categoryController.goUpdate(category)}"/>
+						      <h:commandLink value="Eliminar"
+						                     action="#{categoryController.remove(category.id)}"/>
+						 </h:column>
+				    </h:dataTable>
+				</h:form>
+				<h:form rendered="#{usuarioController.view eq 'brands'}">
+					<h:dataTable  value="#{brandController.getAll()}" var="brand" rowIndexVar="brandController.rowIndex">
+				        <h:column>
+					        <f:facet name="header">N°</f:facet>
+					        #{brandController.rowIndex}
+					    </h:column>
+				        <h:column>
+				            <f:facet name="header">Nombre</f:facet>
+				            #{brand.name}
+				        </h:column>
+				        <h:column>
+				            <f:facet name="header">Descripción</f:facet>
+				            #{brand.status}
+				        </h:column>
+				        <h:column>
+						    <f:facet name="header">Acciones</f:facet>
+						      <h:commandLink value="Modificar"
+						                     action="#{brandController.goUpdate(brand)}"/>
+						      <h:commandLink value="Eliminar"
+						                     action="#{brandController.remove(brand.id)}"/>
+						 </h:column>
+				    </h:dataTable>
+				</h:form>
+				
+			</div>
+		</section>
+   </h:body>
+</html>
