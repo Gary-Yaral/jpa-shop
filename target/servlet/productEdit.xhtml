@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<link rel="stylesheet" type="text/css" href="css/formProduct.css" />
+	<title>Actualizar Producto</title>
+</h:head>
+<h:body>
+
+	<h:form enctype="multipart/form-data" class="form-responsive">
+		<h2>
+			<h:outputText value="Actualizar producto" class="form-title"></h:outputText>
+		</h2>
+		<div>
+			<h:outputText value="Nombre"></h:outputText>
+			<h:inputText value="#{product.name}"></h:inputText>
+		</div>
+		<div>
+			<h:outputText value="Descripción"></h:outputText>
+			<h:inputText value="#{product.description}"></h:inputText>			
+		</div>
+		<div>			
+			<h:outputText value="Precio"></h:outputText>
+			<h:inputText value="#{product.price}"></h:inputText>
+		</div>
+		<div>
+			<h:outputText value="Stock"></h:outputText>
+			<h:inputText value="#{product.stock}"></h:inputText>
+		</div>
+		<div>
+			<h:outputText value="Marca"></h:outputText>
+			<h:selectOneMenu id="marca" value="#{productController.selectedBrand}">
+			    <f:selectItem itemLabel="Seleccione una categoria" itemValue="" />
+			    <f:selectItems value="#{productController.brands}" var="option" itemValue="#{option.id}" itemLabel="#{option.name}"/>
+			</h:selectOneMenu>
+		</div>
+		<div>
+			<h:outputText value="Categoría"></h:outputText>
+			<h:selectOneMenu id="categoria" value="#{productController.selectedCategory}">
+			    <f:selectItem itemLabel="Seleccione una categoria" itemValue="" />
+			    <f:selectItems value="#{productController.categories}" var="categ" itemValue="#{categ.id}" itemLabel="#{categ.name}"/>
+			</h:selectOneMenu>
+		</div>
+		<div>
+			<h:outputText value="Estado"></h:outputText>
+			<h:selectOneMenu id="estado" value="#{productController.selectedStatus}">
+			    <f:selectItem itemLabel="Activo" itemValue="Activo" />
+			    <f:selectItem itemLabel="Inactivo" itemValue="Inactivo" />
+			</h:selectOneMenu>
+		</div>
+		<div class="file">
+			<h:outputText value="Imagen"></h:outputText>
+			<h:inputFile 
+				id="inputFile" 
+				value="#{productController.selectedImage}"
+				require="true"
+				requiredMessage="Debe seleccionar una imagen"
+				alt="upload-file"/>
+		</div>
+		<p:commandButton action="#{productController.update(product)}" value="Actualizar"></p:commandButton>
+		<p:commandButton style="background:gray; border: gray; color:white" action="#{productController.goToDashboard}" value="Regresar"></p:commandButton>
+		<h:outputText class="error file" value="#{productController.generatedError}" />
+	</h:form>
+</h:body>
+</html>

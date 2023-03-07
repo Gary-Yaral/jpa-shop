@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<link rel="stylesheet" type="text/css" href="css/form.css" />
+	<title>Actualizar Producto</title>
+</h:head>
+<h:body>
+
+	<h:form class="form-responsive">
+		<h2>
+			<h:outputText value="Actualizar Marca" class="form-title"></h:outputText>
+		</h2>
+		<div>
+			<h:outputText value="Nombre"></h:outputText>
+			<h:inputText value="#{brand.name}"></h:inputText>
+		</div>
+		<div>
+			<h:outputText value="Estado"></h:outputText>
+			<h:selectOneMenu id="status" value="#{brandController.statusToAdd}">
+			    <f:selectItem itemLabel="Activo" itemValue="Activo" /> 
+			    <f:selectItem itemLabel="Inactivo" itemValue="Inactivo" />   
+			</h:selectOneMenu>
+		</div>
+		<div>
+			<p:commandButton action="#{brandController.update(brand)}" value="Actualizar"></p:commandButton>
+			<p:commandButton style="background:gray; border: gray; color:white" action="#{productController.goToDashboard}" value="Regresar"></p:commandButton>
+		</div>
+		<h:outputText class="error" value="#{brandController.generatedError}" />
+	</h:form>
+
+</h:body>
+</html>

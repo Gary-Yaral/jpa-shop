@@ -16,7 +16,7 @@ import com.web.model.Usuario;
 @RequestScoped
 public class UsuarioController {
 	private Usuario usuario = new Usuario();
-	private static String view = "";
+	private static String view="index";
 	private String accessError = "";
 	
 	public String getAccessError() {
@@ -98,6 +98,10 @@ public class UsuarioController {
 	    FacesContext context = FacesContext.getCurrentInstance();
 	    context.getExternalContext().redirect("index.jsf");
 	    return "index.jsf";
+	}
+	
+	public void registrarse() {
+		
 	}
 
 }

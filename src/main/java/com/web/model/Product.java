@@ -37,7 +37,18 @@ public class Product {
     @Column(name = "status")
     private String status ;
     
-    @Temporal(TemporalType.DATE)
+    @Column(name = "image")
+    private String image;
+    
+    public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	@Temporal(TemporalType.DATE)
     private Date date;
 
 	public Date getDate() {

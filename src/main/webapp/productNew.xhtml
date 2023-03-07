@@ -8,49 +8,62 @@
 	<meta charset="utf-8" name="viewport"
 		content="width=device-width, initial-scale=1"
 		http-equiv="X-UA-Conpatible" />
+	<link rel="stylesheet" type="text/css" href="css/formProduct.css" />
 	<title>Nuevo Producto</title>
 </h:head>
 <h:body>
-	<h2>
-		<h:outputText value="Nuevo producto"></h:outputText>
-	</h2>
-
-	<h:form>
+	<h:form enctype="multipart/form-data" class="form-responsive">
+		<h2>
+			<h:outputText value="Nuevo producto" class="form-title"></h:outputText>
+		</h2>
 		<div>
-			<div>
-				<h:outputText value="Nombre"></h:outputText>
-				<h:inputText value="#{product.name}"></h:inputText>
-			</div>
-			<div>
-				<h:outputText value="Descripción"></h:outputText>
-				<h:inputText value="#{product.description}"></h:inputText>
-			</div>
-			<div>
-				<h:outputText value="Precio"></h:outputText>
-				<h:inputText value="#{product.price}"></h:inputText>
-			</div>
-			<div>
-				<h:outputText value="Marca"></h:outputText>
-				<h:selectOneMenu id="marca" value="#{productController.selectedBrand}">
-				    <f:selectItem itemLabel="Seleccione una categoria" itemValue="" />
-				    <f:selectItems value="#{productController.brands}" var="option" itemValue="#{option.id}" itemLabel="#{option.name}"/>
-				</h:selectOneMenu>
-			</div>
-			<div>
-				<h:outputText value="Categoría"></h:outputText>
-				<h:selectOneMenu id="categoria" value="#{productController.selectedCategory}">
-				    <f:selectItem itemLabel="Seleccione una categoria" itemValue="" />
-				    <f:selectItems value="#{productController.categories}" var="categ" itemValue="#{categ.id}" itemLabel="#{categ.name}"/>
-				</h:selectOneMenu>
-			</div>
-			<div>
-				<h:outputText value="Estado"></h:outputText>
-				<h:selectOneMenu id="estado" value="#{productController.selectedStatus}">
-				    <f:selectItem itemLabel="Activo" itemValue="Activo" />
-				</h:selectOneMenu>
-			</div>
+			<h:outputText value="Nombre"></h:outputText>
+			<h:inputText value="#{productController.productSave.name}"></h:inputText>
 		</div>
-		<h:commandButton action="#{productController.addNew(product)}" value="Añadir"></h:commandButton>
+		<div>
+			<h:outputText value="Descripción"></h:outputText>
+			<h:inputText value="#{productController.productSave.description}"></h:inputText>
+		</div>
+		<div>
+			<h:outputText value="Precio"></h:outputText>
+			<h:inputText value="#{productController.productSave.price}"></h:inputText>
+		</div>
+		<div>
+			<h:outputText value="Stock"></h:outputText>
+			<h:inputText value="#{productController.productSave.stock}"></h:inputText>
+		</div>
+		<div>
+			<h:outputText value="Marca"></h:outputText>
+			<h:selectOneMenu id="marca" value="#{productController.selectedBrand}">
+			    <f:selectItem itemLabel="Seleccione una categoria" itemValue="#{null}" />
+			    <f:selectItems value="#{productController.brands}" var="option" itemValue="#{option.id}" itemLabel="#{option.name}"/>
+			</h:selectOneMenu>
+		</div>
+		<div>
+			<h:outputText value="Categoría"></h:outputText>
+			<h:selectOneMenu id="categoria" value="#{productController.selectedCategory}">
+			    <f:selectItem itemLabel="Seleccione una categoria" itemValue="#{null}" />
+			    <f:selectItems value="#{productController.categories}" var="categ" itemValue="#{categ.id}" itemLabel="#{categ.name}"/>
+			</h:selectOneMenu>
+		</div>
+		<div>
+			<h:outputText value="Estado"></h:outputText>
+			<h:selectOneMenu id="estado" value="#{productController.selectedStatus}">
+			    <f:selectItem itemLabel="Activo" itemValue="Activo" />
+			</h:selectOneMenu>
+		</div>
+		<div class="file">
+			<h:outputText value="Imagen"></h:outputText>
+			<h:inputFile 
+				id="inputFile" 
+				value="#{productController.selectedImage}"
+				require="true"
+				requiredMessage="Debe seleccionar una imagen"
+				alt="upload-file"/>
+		</div>
+		<p:commandButton action="#{productController.addNew()}" value="Añadir"></p:commandButton>
+		<p:commandButton style="background:gray; border: gray; color:white" action="#{productController.goToDashboard}" value="Regresar"></p:commandButton>
+		<h:outputText class="error file" value="#{productController.generatedError}" />
 	</h:form>
 </h:body>
 </html>

@@ -4,6 +4,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 
 import com.web.model.JPAUtil;
 import com.web.model.Product;
@@ -11,10 +12,23 @@ import com.web.model.Product;
 public class ProductDaoImp {
 	EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
 	
+	public String getNextIndex() {
+		int total = getAllProducts().size();
+		if(total == 0) {
+			return "1";
+		} else {
+			Query query = entity.createQuery("SELECT e.id FROM Product e ORDER BY e.id DESC");
+			query.setMaxResults(1);
+			String lastIndex = String.valueOf((Long) query.getSingleResult());
+			int nextIndex = Integer.parseInt(lastIndex) + 1;
+			return String.valueOf(nextIndex);			
+		}
+		
+	}
+	
 	public List<Product> getAllProducts() {
 	    TypedQuery<Product> query = entity.createQuery("SELECT p FROM Product p", Product.class);
 	    List<Product> products = query.getResultList();
-	    entity.close();
 	    return products;
 	}
 	

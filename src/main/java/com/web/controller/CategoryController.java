@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import com.web.idao.CategoryDaoImp;
 import com.web.model.Category;
@@ -14,12 +15,61 @@ import com.web.model.Category;
 @RequestScoped
 public class CategoryController {
 	
-	private int rowIndex = 1;
+	private int total;
+	private int rowIndex = 0;
+	private String statusToAdd;
+	private static String errorMessage;
+	private String generatedError;
+	private static String statusLoaded;
+	
+
+	public CategoryController() {
+		String error = CategoryController.errorMessage;
+		setGeneratedError(error);
+		String status = CategoryController.statusLoaded;
+		setStatusToAdd(status);
+		setTotal(this.getAll().size());
+	}
+	
+	public int getTotal() {
+		return total;
+	}
+
+	public void setTotal(int total) {
+		this.total = total;
+	}
+	
+	public static String getStatusLoaded() {
+		return statusLoaded;
+	}
+	
+	public static void setStatusLoaded(String statusLoaded) {
+		CategoryController.statusLoaded = statusLoaded;
+	}
+	
+	public static String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public static void setErrorMessage(String errorMessage) {
+		CategoryController.errorMessage = errorMessage;
+	}
+
+
+	public String getGeneratedError() {
+		return generatedError;
+	}
+
+
+	public void setGeneratedError(String generatedError) {
+		this.generatedError = generatedError;
+	}
+
+
 	public int getRowIndex() {
 	    return rowIndex;
 	}
 	
-	private String statusToAdd;
 
 	public String getStatusToAdd() {
 		return statusToAdd;
@@ -31,6 +81,11 @@ public class CategoryController {
 
 	public void setRowIndex(int rowIndex) {
 	    this.rowIndex = rowIndex;
+	}
+	
+	public int increment() {
+		setRowIndex(this.rowIndex + 1);
+		return this.rowIndex;
 	}
 	
 	public List<Category> getAll() {
@@ -49,6 +104,8 @@ public class CategoryController {
 	}
 	
 	public String goUpdate(Category category) throws IOException {
+		setErrorMessage(null);
+		setStatusLoaded(category.getStatus());
 		FacesContext context = FacesContext.getCurrentInstance();
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("category", category);
@@ -58,17 +115,32 @@ public class CategoryController {
 	}
 	
 	public String update(Category category) throws IOException {
-		UsuarioController userController = new UsuarioController();
-		category.setStatus(statusToAdd);
-		CategoryDaoImp categoryDAO = new CategoryDaoImp();
-		if(categoryDAO.update(category)) {
-			userController.setView("categories");
-			FacesContext context = FacesContext.getCurrentInstance();
-		    context.getExternalContext().redirect("dashboard.jsf");
-		    return "dashboard.jsf";
+		if(category.getName().isEmpty()) {
+			setErrorMessage("No has ingresado el nombre");
 		} else {
-			return "";
+			UsuarioController userController = new UsuarioController();
+			category.setStatus(statusToAdd);
+			CategoryDaoImp categoryDAO = new CategoryDaoImp();
+			if(categoryDAO.update(category)) {
+				setErrorMessage(null);
+				setStatusLoaded(null);
+				userController.setView("categories");
+				FacesContext context = FacesContext.getCurrentInstance();
+			    context.getExternalContext().redirect("dashboard.jsf");
+			} else {
+				setErrorMessage("No has ingresado el nombre");
+			}
 		}
+		
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+	    try {
+	        ec.redirect(ec.getRequestContextPath() + ec.getRequestServletPath());
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    
+		return null;
+
 	}
 	
 	public String create() throws IOException {

@@ -8,15 +8,16 @@
 	<meta charset="utf-8" name="viewport"
 		content="width=device-width, initial-scale=1"
 		http-equiv="X-UA-Conpatible" />
+		<link rel="stylesheet" type="text/css" href="css/login.css" />
 	<title>Nuevo usuario</title>
 </h:head>
-<h:body style="display: flex; justify-content:center; padding: 1rem">
+<h:body class="body">
 	<f:view>
     	<f:event type="preRenderView" listener="#{usuarioController.userExists}" />
 	</f:view>
 
 	<h:form style="width: 350px">
-		<p:panel header="Login" style="text-align:center">
+		<p:panel header="Iniciar Sesión" style="text-align:center">
 			<h:panelGrid columns="2">
 			<h:outputLabel for="usuario" value="Usuario:" />
 		    <h:inputText id="usuario" value="#{usuarioController.usuario.email}" />
@@ -24,10 +25,11 @@
 		    <h:outputLabel for="contrasena" value="Contraseña:" />
 		    <h:inputSecret id="contrasena" value="#{usuarioController.usuario.password}" />
 		    <h:outputLabel />
-			<p:commandButton style="width:100%" value="Acceder" action="#{usuarioController.acceder}" />
-			<h:outputLabel rendered="#{usuarioController.accessError eq 'error'}">Usuario o contraseña incorrectos</h:outputLabel>
 			</h:panelGrid>
 		</p:panel>
+		<p:commandButton style="width:100%" value="Acceder" action="#{usuarioController.acceder}" />
+		<p:commandLink style="background:gray; border: gray; color:white" action="#{usuarioController.registrarse}" value="Registrarse"></p:commandLink>
+		<h:outputLabel rendered="#{usuarioController.accessError eq 'error'}">Usuario o contraseña incorrectos</h:outputLabel>
 	</h:form>
 </h:body>
 </html>
