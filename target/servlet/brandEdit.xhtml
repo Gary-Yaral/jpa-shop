@@ -8,17 +8,20 @@
 		content="width=device-width, initial-scale=1"
 		http-equiv="X-UA-Conpatible" />
 	<link rel="stylesheet" type="text/css" href="css/form.css" />
+		<link rel="icon" href="banner/logo-tienda.png"/>
 	<title>Actualizar Producto</title>
 </h:head>
 <h:body>
-
+	<f:view>
+   		<f:event type="preRenderView" listener="#{usuarioController.userNotExists}" />
+	</f:view>
 	<h:form class="form-responsive">
 		<h2>
 			<h:outputText value="Actualizar Marca" class="form-title"></h:outputText>
 		</h2>
 		<div>
 			<h:outputText value="Nombre"></h:outputText>
-			<h:inputText value="#{brand.name}"></h:inputText>
+			<h:inputText value="#{brandController.brand.name}"></h:inputText>
 		</div>
 		<div>
 			<h:outputText value="Estado"></h:outputText>
@@ -28,10 +31,10 @@
 			</h:selectOneMenu>
 		</div>
 		<div>
-			<p:commandButton action="#{brandController.update(brand)}" value="Actualizar"></p:commandButton>
+			<p:commandButton action="#{brandController.update}" value="Actualizar"></p:commandButton>
 			<p:commandButton style="background:gray; border: gray; color:white" action="#{productController.goToDashboard}" value="Regresar"></p:commandButton>
 		</div>
-		<h:outputText class="error" value="#{brandController.generatedError}" />
+		<h:outputText class="error" value="#{categoryController.generatedError}" />
 	</h:form>
 
 </h:body>

@@ -93,9 +93,9 @@ public class BrandDaoImp {
 	
 	public boolean hasProducts(long id) {
 		EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
-	    String jpql = "SELECT COUNT(p) FROM Product p WHERE p.category.id = :categoryId";
+	    String jpql = "SELECT COUNT(p) FROM Product p WHERE p.brand.id = :brandId";
 	    TypedQuery<Long> query = entity.createQuery(jpql, Long.class);
-	    query.setParameter("categoryId", id);
+	    query.setParameter("branId", id);
 	    Long count = query.getSingleResult();
 	    return count > 0;
 	}

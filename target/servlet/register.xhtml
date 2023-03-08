@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+	<meta charset="utf-8" name="viewport"
+		content="width=device-width, initial-scale=1"
+		http-equiv="X-UA-Conpatible" />
+	<link rel="icon" href="banner/logo-tienda.png"/>
+	<link rel="stylesheet" type="text/css" href="css/register.css" />
+	<title>Nuevo usuario</title>
+</h:head>
+<h:body class="body">
+	<f:view>
+    	<f:event type="preRenderView" listener="#{usuarioController.userExists}" />
+	</f:view>
+
+	<h:form style="width: 350px">
+		<p:panel header="Iniciar Sesión" style="text-align:center">
+			<h:panelGrid columns="2">
+			
+			<h:outputLabel for="nombre" value="Nombre:" />
+		    <h:inputText id="nombre" value="#{usuarioController.usuario.nombre}" />
+
+			<h:outputLabel for="apellido" value="Apellido:" />
+		    <h:inputText id="apellido" value="#{usuarioController.usuario.apellido}" />
+		    
+		    <h:outputLabel for="email" value="Email:" />
+		    <h:inputText id="email" value="#{usuarioController.usuario.email}" />
+		    
+		    <h:outputLabel for="password" value="Contraseña:" />
+		    <h:inputSecret id="password" value="#{usuarioController.usuario.password}" />
+		
+		    <h:outputLabel for="compare" value="Repetir contraseña:" />
+		    <h:inputSecret id="compare" value="#{usuarioController.passwordCompare}" />
+		    <h:outputLabel />
+			</h:panelGrid>
+		</p:panel>
+		<p:commandButton style="width:100%" value="Guardar" action="#{usuarioController.registerNew()}" />
+		<p:commandLink style="background:gray; border: gray; color:white" action="#{usuarioController.goToLogin}" value="Ir a Inicio"></p:commandLink>
+		<h:outputText class="error file" value="#{usuarioController.generatedError}" />
+	</h:form>
+</h:body>
+</html>
