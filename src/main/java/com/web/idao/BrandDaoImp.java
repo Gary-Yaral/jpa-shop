@@ -1,4 +1,5 @@
 package com.web.idao;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -9,38 +10,49 @@ import com.web.model.Brand;
 import com.web.model.JPAUtil;
 
 public class BrandDaoImp {
-	EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
 	
 	public List<Brand> getAllBrands() {
-	    TypedQuery<Brand> query = entity.createQuery("SELECT p FROM Brand p", Brand.class);
-	    List<Brand> brands = query.getResultList();
+		EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
+		List<Brand> brands = new ArrayList<Brand>();
+		try {
+			TypedQuery<Brand> query = entity.createQuery("SELECT p FROM Brand p", Brand.class);
+			brands = query.getResultList();			
+		} catch (Exception e) {
+			
+		} finally {
+			entity.close();
+		}
+		
 	    return brands;
 	}
 	
 	public Brand searchOne(Long idBrand) {
+		EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
 	    Brand brand = entity.find(Brand.class, idBrand);
 	    return brand;
 	}
 	
 	public boolean remove(Long id) {
-		Brand brandToDelete = entity.find(Brand.class, id);
-		
-		if (brandToDelete == null) {
-	        return false;
-	    }
-		
+		EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
+
 		try {
+			if(hasProducts(id)) return false;
+			Brand brandToDelete = entity.find(Brand.class, id);
+			if (brandToDelete == null) return false;
 			entity.getTransaction().begin();
 			entity.remove(brandToDelete);
 			entity.getTransaction().commit();
+			return true;
 		} catch (Exception e) {
 	        entity.getTransaction().rollback();
 	        return false;
+		} finally {
+			entity.close();
 		}
-	    return true;
 	}
 	
 	public boolean update(Brand brand) {
+		EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
 	    EntityTransaction transaction = entity.getTransaction();
 	    boolean result = true;
 	    try {
@@ -60,6 +72,7 @@ public class BrandDaoImp {
 	}
 	
 	public boolean add(Brand brand) {
+		EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
 	    boolean result = true;
 	    EntityTransaction transaction = entity.getTransaction();
 	    try {
@@ -72,8 +85,19 @@ public class BrandDaoImp {
 	            transaction.rollback();
 	        }
 	        e.printStackTrace();
+	    } finally {
+	    	entity.close();
 	    }
 	    return result;
+	}
+	
+	public boolean hasProducts(long id) {
+		EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
+	    String jpql = "SELECT COUNT(p) FROM Product p WHERE p.category.id = :categoryId";
+	    TypedQuery<Long> query = entity.createQuery(jpql, Long.class);
+	    query.setParameter("categoryId", id);
+	    Long count = query.getSingleResult();
+	    return count > 0;
 	}
 
 }

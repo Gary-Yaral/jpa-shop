@@ -1,6 +1,4 @@
 package com.web.model;
-
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -45,7 +43,7 @@ public class Category {
 	}
 
 	@OneToMany(mappedBy = "category")
-    private Set<Product> products = new HashSet<>();
+    private Set<Product> products;
  
     // getters and setters
  
@@ -72,4 +70,5 @@ public class Category {
     public void setProducts(Set<Product> products) {
         this.products = products;
     }
+   
 }

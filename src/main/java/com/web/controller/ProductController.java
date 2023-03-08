@@ -30,16 +30,22 @@ public class ProductController{
 	List<SelectItem> categorySelect = new ArrayList<SelectItem>();
 	List<SelectItem> brandSelect = new ArrayList<SelectItem>();	
 	List<SelectItem> brands, categories;
+	private List<Product> list = new ArrayList<Product>();
+	private List<Product> listShopping = new ArrayList<Product>();
+
 	private int total; 
 	private Part selectedImage;
 	private String generatedError;
+	private String title;
 	private Product productSave = new Product();
 	private static Product product = new Product();
+	private static String categoryFiltered;
 	private static String errorMessage;
 	private static String selectedBrand;
 	private static String selectedCategory;
 	private static String selectedStatus = "Activo";
-	
+	private static List<Product> listFiltered = new ArrayList<Product>();
+
 	public ProductController() {
 		List<Brand> allBrands = brandDAO.getAllBrands();
 		List<Category> allCategories = categoryDAO.getAllCategories();
@@ -63,8 +69,52 @@ public class ProductController{
 		setGeneratedError(error);
 		Product loaded = ProductController.product;
 		setProductSave(loaded);
-		setTotal(this.getAll().size());
+		List<Product> allProducts = this.getAll();
+		setTotal(allProducts.size());
+		setList(allProducts);
+		setListShopping(listFiltered);
+		setTitle(categoryFiltered);
 	} 
+	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public static String getCategoryFiltered() {
+		return categoryFiltered;
+	}
+
+	public static void setCategoryFiltered(String categoryFiltered) {
+		ProductController.categoryFiltered = categoryFiltered;
+	}
+	
+	public List<Product> getListShopping() {
+		return listShopping;
+	}
+
+	public void setListShopping(List<Product> listShopping) {
+		this.listShopping = listShopping;
+	}
+	
+	public List<Product> getListFiltered() {
+		return listFiltered;
+	}
+
+	public void setListFiltered(List<Product> listFiltered) {
+		ProductController.listFiltered = listFiltered;
+	}
+	
+	public List<Product> getList() {
+		return list;
+	}
+
+	public void setList(List<Product> list) {
+		this.list = list;
+	}
 	
 	public int getTotal() {
 		return total;
@@ -178,31 +228,27 @@ public class ProductController{
 		this.brandDAO = brandDAO;
 	}
 
-	
-	// Obtenemos lista de productos
 	public List<Product> getAll() {
 		ProductDaoImp productDAO = new ProductDaoImp();
 		return productDAO.getAllProducts();
 	}
 	
-	// eliminamos un producto
-	public void remove(Long id, String name) {
+	public String remove(Long id, String name) {
 		String path =FacesContext.getCurrentInstance().getExternalContext()+"/resources/img/"+name;
 		File archivo = new File(path);
 		ProductDaoImp productDAO = new ProductDaoImp();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 		try {
 			productDAO.remove(id);
 			archivo.delete();
-			System.out.println("Error");			
+			ec.redirect(ec.getRequestContextPath() + ec.getRequestServletPath());
 		} catch(Exception e) {
+			e.printStackTrace();
 		}
-		if(productDAO.remove(id)) {
-			System.out.println("Se eliminó");
-		} else {
-		}
+		
+		return null;
 	}
 	
-	// Redirecciona a la ventana de actualizacion
 	public String goUpdate(Product product) throws IOException {
 		String brandId = String.valueOf(product.getBrand().getId());
 		String categoryId = String.valueOf(product.getCategory().getId());
@@ -218,8 +264,7 @@ public class ProductController{
 	    return "productEdit.jsf";
 	}
 	
-	// Actualiza un producto
-	public String update(Product product) throws IOException {
+	public String update() throws IOException {
 		if(validateFormUpdate(product)) {	
 			ProductDaoImp productDAO = new ProductDaoImp();
 			UploadFile upFile = new UploadFile();
@@ -227,17 +272,15 @@ public class ProductController{
 			Category category = categoryDAO.searchOne((long)Integer.parseInt(selectedCategory));
 			product.setBrand(brand);
 			product.setCategory(category);
-			product.setStatus(selectedStatus);
-			
-			System.out.println("Si valida1");
-
+			product.setStatus(selectedStatus);		
+			System.out.println("Product valido para actualización");
 			if(productDAO.update(product)) {
-				System.out.println("Si valida2");
+				System.out.println("Producto se actualiza");
 			    if(selectedImage != null) {
-			    	System.out.println("Si valida3");
+			    	System.out.println("Se carga imagen");
 			    	System.out.println(product.getImage());
 			    	if(upFile.updateFile(selectedImage, product.getImage())) {
-			    		System.out.println("Si valida4");
+			    		System.out.println("Se actualiza product e imagen");
 			    		setErrorMessage(null);
 			    		goToDashboard();
 			    		return null;
@@ -248,12 +291,13 @@ public class ProductController{
 			    } else {
 			    	setErrorMessage(null);
 			    	goToDashboard(); 
-			    	return null;	
+			    	return "dashboard.jsf";	
 			    }			    
 			    
 			} else {
 				setErrorMessage("Error al guardar el producto");
 				return reloaded();
+				
 			}
 		}
 
@@ -266,7 +310,6 @@ public class ProductController{
 	    return "dashboard.jsf";
 	}
 	
-	// Redirecciona a la ventana de crear nuevo producto
 	public String create() throws IOException {
 		Product product = new Product();
 		setProduct(product);
@@ -281,7 +324,6 @@ public class ProductController{
 	    return "productNew.jsf";
 	}
 	
-	// Agrega nuevo producto
 	public String addNew() throws IOException {
 		if(validateForm(product)) {	
 			ProductDaoImp productDAO = new ProductDaoImp();
@@ -301,6 +343,7 @@ public class ProductController{
 					setSelectedCategory(null);
 					FacesContext context = FacesContext.getCurrentInstance();
 					context.getExternalContext().redirect("dashboard.jsf");
+					return "dashboard.jsf";
 				} else {
 					setErrorMessage("Error al guardar el producto");
 					return reloaded();
@@ -448,6 +491,19 @@ public class ProductController{
 		return converted;
 	}
 	
+	public String filterList(long id) {
+		ProductDaoImp productDAO = new ProductDaoImp();
+		CategoryDaoImp categoryDAO = new CategoryDaoImp();
+		List<Product> filtered =  productDAO.getFiltered(id);
+		Category result = categoryDAO.searchOne(id);
+		if(result != null) {
+			setCategoryFiltered(result.getName());
+			setListFiltered(filtered);
+			reloaded();			
+		}
+		return "";
+	}
+	
 	public String reloaded() {
 		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 	    try {
@@ -455,7 +511,7 @@ public class ProductController{
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
-		return null;
+		return "";
 	}
 	
 }

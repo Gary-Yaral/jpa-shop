@@ -7,17 +7,21 @@
 	<meta charset="utf-8" name="viewport"
 		content="width=device-width, initial-scale=1"
 		http-equiv="X-UA-Conpatible" />
+	<link rel="icon" href="banner/logo-tienda.png"/>
 	<link rel="stylesheet" type="text/css" href="css/form.css" />
 	<title>Actualizar Producto</title>
 </h:head>
 <h:body>
+	<f:view>
+   		<f:event type="preRenderView" listener="#{usuarioController.userNotExists}" />
+	</f:view>
 	<h:form class="form-responsive">
 		<h2>
 			<h:outputText value="Nueva Categoria" class="form-title"/>
 		</h2>
 		<div>
 			<h:outputText value="Nombre"></h:outputText>
-			<h:inputText value="#{category.name}"></h:inputText>			
+			<h:inputText value="#{categoryController.category.name}"></h:inputText>			
 		</div>
 		<div>
 			<h:outputText value="Estado"></h:outputText>
@@ -26,9 +30,10 @@
 			</h:selectOneMenu>
 		</div>
 		<div>
-			<p:commandButton action="#{categoryController.addNew(category)}" value="Guardar"></p:commandButton>	
+			<p:commandButton action="#{categoryController.addNew}" value="Guardar"></p:commandButton>	
 			<p:commandButton style="background:gray; border: gray; color:white" action="#{productController.goToDashboard}" value="Regresar"></p:commandButton>
 		</div>
+		<h:outputText class="error" value="#{categoryController.generatedError}" />
 	</h:form>
 </h:body>
 </html>

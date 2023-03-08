@@ -1,6 +1,7 @@
 package com.web.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,9 @@ public class BrandController {
 	private String generatedError;
 	private static String statusLoaded;
 	private String statusToAdd;
+	private List<Brand> list = new ArrayList<Brand>();
+	private Brand brand = new Brand();
+	private static Brand brandLoaded = new Brand();
 
 	public BrandController() {
 		String error = getErrorMessage();
@@ -29,6 +33,33 @@ public class BrandController {
 		String status = BrandController.statusLoaded;
 		setStatusToAdd(status);
 		setTotal(this.getAll().size());
+		setList(getAll());
+		Brand loaded = BrandController.brandLoaded;
+		setBrand(loaded);
+	}
+	
+	public static Brand getBrandLoaded() {
+		return brandLoaded;
+	}
+
+	public static void setBrandLoaded(Brand brandLoaded) {
+		BrandController.brandLoaded = brandLoaded;
+	}
+	
+	public Brand getBrand() {
+		return brand;
+	}
+
+	public void setBrand(Brand brand) {
+		this.brand = brand;
+	}
+	
+	public List<Brand> getList() {
+		return list;
+	}
+
+	public void setList(List<Brand> list) {
+		this.list = list;
 	}
 	
 	public int getTotal() {
@@ -97,18 +128,22 @@ public class BrandController {
 		return brandDAO.getAllBrands();
 	}
 	
-	public void remove(Long id) {
+	public String remove(Long id) {
 		BrandDaoImp brandDAO = new BrandDaoImp();
-		if(brandDAO.remove(id)) {
-			System.out.println("Se eliminó");
-		} else {
-			System.out.println("Tiene elementos vinculados");
-		}	
+		brandDAO.remove(id);
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+	    try {
+	        ec.redirect(ec.getRequestContextPath() + ec.getRequestServletPath());
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+		return null;
 	}
 	
 	public String goUpdate(Brand brand) throws IOException {
 		setErrorMessage(null);
 		setStatusLoaded(brand.getStatus());
+		setBrandLoaded(brand);
 		FacesContext context = FacesContext.getCurrentInstance();
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("brand", brand);
@@ -117,7 +152,7 @@ public class BrandController {
 
 	}
 	
-	public String update(Brand brand) throws IOException {
+	public String update() throws IOException {
 		if(brand.getName().isEmpty()) {
 			setErrorMessage("No has ingresado el nombre");
 		} else {
@@ -128,8 +163,10 @@ public class BrandController {
 				setStatusLoaded(null);
 				FacesContext context = FacesContext.getCurrentInstance();
 			    context.getExternalContext().redirect("dashboard.jsf");
+			    return null;
 			} else {
 				setErrorMessage("No se ha podido actualizar la marca");
+				return "";
 			}
 		}
 		
@@ -144,15 +181,13 @@ public class BrandController {
 	
 	public String create() throws IOException {
 		setErrorMessage(null);
-		Brand brand = new Brand();
+		setBrandLoaded(new Brand());
 		FacesContext context = FacesContext.getCurrentInstance();
-		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-		sessionMap.put("brand", brand);
 	    context.getExternalContext().redirect("brandNew.jsf");
 	    return "brandNew.jsf";
 	}
 	
-	public String addNew(Brand brand) throws IOException {
+	public String addNew() throws IOException {
 		if(brand.getName().isEmpty()) {
 			setErrorMessage("No has ingresado el nombre");
 		} else {
@@ -175,6 +210,5 @@ public class BrandController {
 	    }
 		return null;
 	}
-	
 
 }

@@ -12,13 +12,10 @@ import com.web.model.Usuario;
 
 public class UsuarioDaoImp implements UsuarioDao{
 	EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
-	
+
 	@Override
-	public void crear(Usuario usuario) {
-		// TODO Auto-generated method stub
-		entity.getTransaction().begin();
-		entity.persist(usuario);
-		entity.getTransaction().commit();
+	public boolean modificar(Usuario usuario) {
+		return false;
 	}
 
 	@Override
@@ -29,11 +26,20 @@ public class UsuarioDaoImp implements UsuarioDao{
 	}
 	
 	@Override
-	public void guardar(Usuario usuario) {
-		entity.getTransaction().begin();
-		entity.persist(usuario);
-		entity.getTransaction().commit();
-		// JPAUtil.shutdown();
+	public boolean guardar(Usuario usuario) {
+		boolean guardado = false;
+		try {
+			entity.getTransaction().begin();
+			entity.persist(usuario);
+			entity.getTransaction().commit();	
+			guardado = true;
+			
+		} catch(Exception e) {
+			System.out.println(e);
+			guardado = false;
+		}
+		
+		return guardado;
 	}
 	
 	@Override

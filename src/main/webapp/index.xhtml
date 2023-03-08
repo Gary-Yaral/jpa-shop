@@ -2,13 +2,13 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:p="http://primefaces.org/ui">
 <h:head>
 	<meta charset="utf-8" name="viewport"
 		content="width=device-width, initial-scale=1"
 		http-equiv="X-UA-Conpatible" />
-		<link rel="stylesheet" type="text/css" href="css/login.css" />
+	<link rel="icon" href="banner/logo-tienda.png"/>
+	<link rel="stylesheet" type="text/css" href="css/login.css" />
 	<title>Nuevo usuario</title>
 </h:head>
 <h:body class="body">
@@ -29,7 +29,7 @@
 		</p:panel>
 		<p:commandButton style="width:100%" value="Acceder" action="#{usuarioController.acceder}" />
 		<p:commandLink style="background:gray; border: gray; color:white" action="#{usuarioController.registrarse}" value="Registrarse"></p:commandLink>
-		<h:outputLabel rendered="#{usuarioController.accessError eq 'error'}">Usuario o contraseña incorrectos</h:outputLabel>
+		<h:outputText class="error" value="#{usuarioController.generatedError}" />
 	</h:form>
 </h:body>
 </html>
